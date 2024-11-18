@@ -13,7 +13,7 @@ public class Assignment {
     private String id;
     private String userId;
     private String task;
-    private String adminId;
-    private String status; // PENDING, ACCEPTED, REJECTED
+    private String adminUsername;
+    private String status = "PENDING"; // PENDING, ACCEPTED, REJECTED
     private LocalDateTime createdAt = LocalDateTime.now();
 }

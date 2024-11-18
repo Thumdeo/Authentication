@@ -3,6 +3,7 @@ package com.example.mongodb_springboot.Controllers;
 import com.example.mongodb_springboot.Models.Assignment;
 import com.example.mongodb_springboot.Services.AssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,11 @@ public class AssignmentController {
     @PostMapping("/upload")
     public Assignment uploadAssignment(@RequestBody Assignment assignment) {
         return assignmentService.uploadAssignment(assignment);
+    }
+
+    @GetMapping("/{adminUsername}")
+    public ResponseEntity<List<Assignment>> getAssignmentsForAdmin(@PathVariable String adminUsername) {
+        return ResponseEntity.ok(assignmentService.getAssignmentsForAdmin(adminUsername));
     }
 
     @GetMapping
