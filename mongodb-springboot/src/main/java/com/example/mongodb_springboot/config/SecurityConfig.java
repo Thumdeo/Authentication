@@ -21,8 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-        @Autowired
-        private JwtUtil jwtUtil;
+
 
         @Autowired
         private JwtFilter jwtFilter;
@@ -30,13 +29,14 @@ public class SecurityConfig {
         // Define the SecurityFilterChain bean
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-                http.csrf().disable()
+                http
+                        .csrf(csrf -> csrf.disable())
                         .authorizeRequests()
                         .requestMatchers("/admins/register", "/admins/login", "/users/register", "/users/login", "/users/assignments/upload").permitAll()
                         .requestMatchers("/assignments/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
                         .and()
-                        .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);  // Use your JWT filter
+                        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);  // Use your JWT filter
 
                 return http.build();
         }

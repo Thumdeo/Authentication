@@ -15,27 +15,34 @@ public class AssignmentController {
     private AssignmentService assignmentService;
 
     @PostMapping("/upload")
-    public Assignment uploadAssignment(@RequestBody Assignment assignment) {
-        return assignmentService.uploadAssignment(assignment);
+    public ResponseEntity<String> uploadAssignment(@RequestBody Assignment assignment) {
+        assignmentService.uploadAssignment(assignment);
+        return ResponseEntity.ok("Assignment uploaded successfully");
     }
 
-    @GetMapping("/{adminUsername}")
-    public ResponseEntity<List<Assignment>> getAssignmentsForAdmin(@PathVariable String adminUsername) {
-        return ResponseEntity.ok(assignmentService.getAssignmentsForAdmin(adminUsername));
+    @GetMapping("/admin")
+    public ResponseEntity<List<Assignment>> getAssignmentsForAdmin(@RequestParam String adminUsername) {
+        return ResponseEntity.ok(assignmentService.getAssignmentsByAdmin(adminUsername));
     }
 
-    @GetMapping
-    public List<Assignment> getAssignments(@RequestParam String adminId) {
-        return assignmentService.getAssignmentsByAdmin(adminId);
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<String> updateAssignmentStatus(@PathVariable String id, @RequestParam String status) {
+        assignmentService.updateAssignmentStatus(id, status);
+        return ResponseEntity.ok("Assignment status updated successfully");
     }
 
-    @PostMapping("/{id}/accept")
-    public void acceptAssignment(@PathVariable String id) {
-        assignmentService.updateAssignmentStatus(id, "ACCEPTED");
-    }
-
-    @PostMapping("/{id}/reject")
-    public void rejectAssignment(@PathVariable String id) {
-        assignmentService.updateAssignmentStatus(id, "REJECTED");
-    }
+//    @GetMapping
+//    public List<Assignment> getAssignments(@RequestParam String adminId) {
+//        return assignmentService.getAssignmentsByAdmin(adminId);
+//    }
+//
+//    @PostMapping("/{id}/accept")
+//    public void acceptAssignment(@PathVariable String id) {
+//        assignmentService.updateAssignmentStatus(id, "ACCEPTED");
+//    }
+//
+//    @PostMapping("/{id}/reject")
+//    public void rejectAssignment(@PathVariable String id) {
+//        assignmentService.updateAssignmentStatus(id, "REJECTED");
+//    }
 }

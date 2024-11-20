@@ -13,17 +13,20 @@ public class AssignmentService {
     private AssignmentRepository assignmentRepository;
 
     public Assignment uploadAssignment(Assignment assignment) {
+
         return assignmentRepository.save(assignment);
     }
 
     public List<Assignment> getAssignmentsByAdmin(String adminId) {
-        return assignmentRepository.findByAdminId(adminId);
+        return assignmentRepository.findByAdminUsername(adminId);
     }
-
+    
     public void updateAssignmentStatus(String id, String status) {
         Assignment assignment = assignmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Assignment not found"));
         assignment.setStatus(status);
         assignmentRepository.save(assignment);
     }
+
+
 }

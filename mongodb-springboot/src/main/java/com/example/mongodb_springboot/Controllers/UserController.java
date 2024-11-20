@@ -2,6 +2,7 @@ package com.example.mongodb_springboot.Controllers;
 
 
 import com.example.mongodb_springboot.Models.Assignment;
+import com.example.mongodb_springboot.Services.AssignmentService;
 import com.example.mongodb_springboot.Services.UserService;
 import com.example.mongodb_springboot.dto.LoginRequest;
 import com.example.mongodb_springboot.dto.UserRegistrationRequest;
@@ -19,6 +20,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
+    @Autowired
+    private AssignmentService assignmentService;  // Use AssignmentService instead of UserService
+
+
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserRegistrationRequest request) {
         userService.registerUser(request);
@@ -32,7 +38,12 @@ public class UserController {
 
     @PostMapping("/assignments/upload")
     public ResponseEntity<String> uploadAssignment(@RequestBody AssignmentRequest request) {
-        userService.uploadAssignment(request);
+        // Convert AssignmentRequest to Assignment and upload it
+        Assignment assignment = new Assignment();
+        assignment.setTask(request.getTask());
+        assignment.setUserId(request.getUserId());
+        assignment.setAdminUsername(request.getAdminUsername());
+        assignmentService.uploadAssignment(assignment);  // Call the correct service method
         return ResponseEntity.ok("Assignment uploaded successfully");
     }
 
