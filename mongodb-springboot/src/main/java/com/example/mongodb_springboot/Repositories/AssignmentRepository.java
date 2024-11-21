@@ -7,5 +7,5 @@ import java.util.List;
 
 
 public interface AssignmentRepository extends MongoRepository<Assignment, String> {
-    List<Assignment> findByAdminUsername(String adminUsername);
+    List<Assignment> findByUserId(String userId);
 }

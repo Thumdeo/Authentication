@@ -49,6 +49,6 @@ public class UserController {
 
     @GetMapping("/assignments")
     public ResponseEntity<List<Assignment>> getAssignments(@RequestParam String userId) {
-        return ResponseEntity.ok(userService.getAssignmentsByUser(userId));
+        return ResponseEntity.ok(assignmentService.getAssignmentsByUser(userId));
     }
 }

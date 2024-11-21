@@ -17,8 +17,8 @@ public class AssignmentService {
         return assignmentRepository.save(assignment);
     }
 
-    public List<Assignment> getAssignmentsByAdmin(String adminId) {
-        return assignmentRepository.findByAdminUsername(adminId);
+    public List<Assignment> getAssignmentsByUser(String userId) {
+        return assignmentRepository.findByUserId(userId);
     }
     
     public void updateAssignmentStatus(String id, String status) {

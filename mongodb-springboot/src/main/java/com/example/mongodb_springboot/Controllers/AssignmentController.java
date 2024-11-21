@@ -22,7 +22,7 @@ public class AssignmentController {
 
     @GetMapping("/admin")
     public ResponseEntity<List<Assignment>> getAssignmentsForAdmin(@RequestParam String adminUsername) {
-        return ResponseEntity.ok(assignmentService.getAssignmentsByAdmin(adminUsername));
+        return ResponseEntity.ok(assignmentService.getAssignmentsByUser(adminUsername));
     }
 
     @PatchMapping("/{id}/status")
