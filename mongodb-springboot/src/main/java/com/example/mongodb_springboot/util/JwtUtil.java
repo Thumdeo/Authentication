@@ -18,6 +18,7 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
+
     private final String SECRET_KEY = "your_secret_key"; // Use a secure key in production.
 
     // Generate a token for a user

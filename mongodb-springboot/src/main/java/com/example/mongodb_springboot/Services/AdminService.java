@@ -11,13 +11,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class AdminService {
 
+        private final AdminRepository adminRepository;
+
+        private final BCryptPasswordEncoder passwordEncoder;
 
         @Autowired
-        private AdminRepository adminRepository;
-
-        @Autowired
-        private BCryptPasswordEncoder passwordEncoder;
-
+        public AdminService(AdminRepository adminRepository, BCryptPasswordEncoder passwordEncoder) {
+        this.adminRepository = adminRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
         public void registerAdmin(UserRegistrationRequest request) {
             Admin admin = new Admin();
             admin.setUsername(request.getUsername());

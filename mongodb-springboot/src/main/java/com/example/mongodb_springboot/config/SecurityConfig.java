@@ -1,6 +1,7 @@
 package com.example.mongodb_springboot.config;
 
 import com.example.mongodb_springboot.Services.AdminService;
+import com.example.mongodb_springboot.Services.CustomUserDetailsService;
 import com.example.mongodb_springboot.Services.UserService;
 import com.example.mongodb_springboot.filter.JwtFilter;
 import com.example.mongodb_springboot.util.JwtUtil;
@@ -11,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -21,22 +23,34 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
+        private final UserDetailsService userDetailsService;
+        private final JwtFilter jwtFilter;
 
+        public SecurityConfig(UserDetailsService userDetailsService, JwtFilter jwtFilter) {
+                this.userDetailsService = userDetailsService;
+                this.jwtFilter = jwtFilter;
+        }
 
-        @Autowired
-        private JwtFilter jwtFilter;
+        @Bean
+        public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+                AuthenticationManagerBuilder authenticationManagerBuilder =
+                        http.getSharedObject(AuthenticationManagerBuilder.class);
 
-        // Define the SecurityFilterChain bean
+                authenticationManagerBuilder
+                        .userDetailsService(userDetailsService)
+                        .passwordEncoder(passwordEncoder());
+                return authenticationManagerBuilder.getOrBuild();
+        }
+
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http
-                        .csrf(csrf -> csrf.disable())
-                        .authorizeRequests()
-                        .requestMatchers("/admins/register", "/admins/login", "/users/register", "/users/login", "/users/assignments/upload").permitAll()
-                        .requestMatchers("/assignments/**").hasAnyRole("ADMIN", "USER")
-                        .anyRequest().authenticated()
-                        .and()
-                        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);  // Use your JWT filter
+                        //Disable CSRF directly
+                        .authorizeHttpRequests(auth -> auth
+                                .requestMatchers("/register", "/login").permitAll()
+                                .requestMatchers("/admins/**", "/assignments/**").authenticated()
+                        )
+                        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
                 return http.build();
         }
@@ -46,9 +60,9 @@ public class SecurityConfig {
                 return new BCryptPasswordEncoder();
         }
 
-        // If you still need AuthenticationManager, define it as a bean
-        @Bean
-        public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-                return http.getSharedObject(AuthenticationManagerBuilder.class).build();
-        }
 }
+
+
+
+
+
